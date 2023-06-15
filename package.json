@@ -21,8 +21,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint src --ext .ts --ext .tsx",
-    "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,html,css,scss,md}\"",
-    "format": "npm run prettier && npm run lint",
+    "prettier": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,html,css,scss,md}\"",
+    "prettier:fix": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,html,css,scss,md}\"",
     "prepare": "husky install"
   },
   "eslintConfig": {
