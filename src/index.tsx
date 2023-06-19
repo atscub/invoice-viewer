@@ -12,15 +12,19 @@ import "./index.css";
 import App from "./App";
 import { store } from "./redux/store";
 import reportWebVitals from "./reportWebVitals";
+import { MockedProvider } from "@apollo/client/testing";
+import { mocks } from "./mocks";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
+    <CssBaseline />
     <Provider store={store}>
-      <CssBaseline />
-      <App />
+      <MockedProvider mocks={mocks}>
+        <App />
+      </MockedProvider>
     </Provider>
   </React.StrictMode>
 );

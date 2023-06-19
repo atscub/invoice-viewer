@@ -10,10 +10,11 @@ import {
 import "./App.css";
 import rodeoFullLogo from "./assets/rodeo-full-logo.svg";
 import InvoiceViewer from "./components/InvoiceViewer";
-import { InvoiceModel, TaxRates } from "./models";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { initFromModel, selectInvoice } from "./redux/invoiceSlice";
 import { useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { GET_INVOICE_QUERY } from "./api/invoice";
 
 const theme = createTheme({
   palette: {
@@ -23,81 +24,24 @@ const theme = createTheme({
   },
 });
 
-const invoiceData: InvoiceModel = {
-  phases: [
-    {
-      id: "phase-1",
-      name: "Phase 1",
-      fixedDiscount: -300,
-      items: [
-        {
-          id: "1",
-          name: "Item 1",
-          description: "lorem ipsum dolor sit amet 1",
-          unit: "hr",
-          unitPrice: 25,
-          quantity: 10,
-          taxRate: TaxRates.VAT_21,
-        },
-        {
-          id: "2",
-          name: "Item 2",
-          description: "lorem ipsum dolor sit amet 2",
-          unit: "unit",
-          unitPrice: 400,
-          quantity: 3,
-          taxRate: TaxRates.VAT_09,
-        },
-        {
-          id: "3",
-          name: "Item 3",
-          description: "lorem ipsum dolor sit amet 3",
-          unit: "unit",
-          unitPrice: 100,
-          quantity: 1,
-          taxRate: TaxRates.VAT_21,
-        },
-      ],
-    },
-    {
-      id: "phase-2",
-      name: "Phase 2",
-      fixedDiscount: -100,
-      items: [
-        {
-          id: "4",
-          name: "Item 4",
-          description: "lorem ipsum dolor sit amet 4",
-          unit: "hr",
-          unitPrice: 25,
-          quantity: 10,
-          taxRate: TaxRates.VAT_21,
-        },
-        {
-          id: "5",
-          name: "Item 5",
-          description: "lorem ipsum dolor sit amet 5",
-          unit: "unit",
-          unitPrice: 400,
-          quantity: 3,
-          taxRate: TaxRates.VAT_09,
-        },
-      ],
-    },
-  ],
-  relativeDiscount: -0.1,
-};
-
 function App() {
   const invoice = useAppSelector(selectInvoice);
   const dispatch = useAppDispatch();
 
+  const { data: { invoice: invoiceData } = {}, error } = useQuery(
+    GET_INVOICE_QUERY,
+    {
+      variables: { id: "1" },
+    }
+  );
+
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      dispatch(initFromModel(invoiceData));
-    }, 500);
-  }, []);
+    if (invoiceData) {
+      setTimeout(() => {
+        dispatch(initFromModel(invoiceData));
+      }, 500);
+    }
+  }, [invoiceData]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -113,6 +57,10 @@ function App() {
       <Container sx={{ paddingY: 4 }}>
         {invoice !== null ? (
           <InvoiceViewer invoice={invoice} />
+        ) : error ? (
+          <Typography variant="h6" component="div">
+            Error loading invoice
+          </Typography>
         ) : (
           <Typography variant="h6" component="div">
             Loading...

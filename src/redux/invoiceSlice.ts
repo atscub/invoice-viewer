@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import type { InvoiceModel, InvoiceComputed } from "../models";
-import { getComputedInvoice } from "./invoiceUtils";
+import { getComputedInvoice } from "../services/invoiceService";
 
 type NullableInvoice = InvoiceComputed | null;
 

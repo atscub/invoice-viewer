@@ -1,15 +1,4 @@
-import {
-  Chip,
-  Divider,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Stack, Table, TableBody, TableFooter, TableHead } from "@mui/material";
 import { InvoicePhaseComputed } from "../models";
 import CostItem from "./CostItem";
 

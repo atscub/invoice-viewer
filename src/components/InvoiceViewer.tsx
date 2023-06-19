@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Snackbar,
-} from "@mui/material";
+import { Button, Card, CardContent, CardHeader, Snackbar } from "@mui/material";
 import { InvoiceComputed } from "../models";
 import InvoicePhase from "./InvoicePhase";
 import InvoiceSummary from "./InvoiceSummary";
