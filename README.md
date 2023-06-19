@@ -1,3 +1,6 @@
+![Screenshot of the page](https://github.com/atscub/invoice-viewer/assets/29891965/a9489d58-9961-4dd0-a49e-2251d9d11014)
+
+
 ## Running the program in dev mode
 
 ```bash
