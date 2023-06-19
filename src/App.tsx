@@ -11,6 +11,9 @@ import "./App.css";
 import rodeoFullLogo from "./assets/rodeo-full-logo.svg";
 import InvoiceViewer from "./components/InvoiceViewer";
 import { InvoiceModel, TaxRates } from "./models";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { initFromModel, selectInvoice } from "./redux/invoiceSlice";
+import { useEffect } from "react";
 
 const theme = createTheme({
   palette: {
@@ -23,6 +26,9 @@ const theme = createTheme({
 const invoiceData: InvoiceModel = {
   phases: [
     {
+      id: "phase-1",
+      name: "Phase 1",
+      fixedDiscount: -300,
       items: [
         {
           id: "1",
@@ -53,10 +59,46 @@ const invoiceData: InvoiceModel = {
         },
       ],
     },
+    {
+      id: "phase-2",
+      name: "Phase 2",
+      fixedDiscount: -100,
+      items: [
+        {
+          id: "4",
+          name: "Item 4",
+          description: "lorem ipsum dolor sit amet 4",
+          unit: "hr",
+          unitPrice: 25,
+          quantity: 10,
+          taxRate: TaxRates.VAT_21,
+        },
+        {
+          id: "5",
+          name: "Item 5",
+          description: "lorem ipsum dolor sit amet 5",
+          unit: "unit",
+          unitPrice: 400,
+          quantity: 3,
+          taxRate: TaxRates.VAT_09,
+        },
+      ],
+    },
   ],
+  relativeDiscount: -0.1,
 };
 
 function App() {
+  const invoice = useAppSelector(selectInvoice);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // Simulate API call
+    setTimeout(() => {
+      dispatch(initFromModel(invoiceData));
+    }, 500);
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static" enableColorOnDark>
@@ -68,8 +110,14 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container sx={{ paddingTop: 3 }}>
-        <InvoiceViewer invoice={invoiceData} />
+      <Container sx={{ paddingY: 4 }}>
+        {invoice !== null ? (
+          <InvoiceViewer invoice={invoice} />
+        ) : (
+          <Typography variant="h6" component="div">
+            Loading...
+          </Typography>
+        )}
       </Container>
     </ThemeProvider>
   );

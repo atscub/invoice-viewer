@@ -6,19 +6,24 @@ export interface InvoiceModel extends BaseModel {
   relativeDiscount?: number;
   phases: InvoicePhaseModel[];
 }
-export type InvoiceComputed = InvoiceModel & {
+export interface InvoiceComputed extends InvoiceModel {
   phases: InvoicePhaseComputed[];
   totalCost: number;
-};
+  discountedTotalCost: number;
+  totalAddedTax: number;
+}
 
 export interface InvoicePhaseModel extends BaseModel {
+  name?: string;
   fixedDiscount?: number;
   items: CostItemModel[];
 }
-export type InvoicePhaseComputed = InvoicePhaseModel & {
+export interface InvoicePhaseComputed extends InvoicePhaseModel {
   items: CostItemComputed[];
+  subtotalCost: number;
+  addedTaxCost: number;
   totalCost: number;
-};
+}
 
 export interface CostItemModel extends BaseModel {
   name: string;
@@ -29,9 +34,11 @@ export interface CostItemModel extends BaseModel {
   taxRate: TaxRates;
 }
 
-export type CostItemComputed = CostItemModel & {
-  fixedDiscountFee?: number;
-};
+export interface CostItemComputed extends CostItemModel {
+  grossCost: number;
+  discountedCost?: number;
+  netCost: number;
+}
 
 export enum TaxRates {
   VAT_0 = 0,

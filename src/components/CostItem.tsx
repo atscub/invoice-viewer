@@ -1,26 +1,64 @@
-import { TableCell, TableRow, Typography } from "@mui/material";
-import { CostItemModel } from "../models";
+import { Chip, TableCell, TableRow, Typography, useTheme } from "@mui/material";
+import { CostItemComputed } from "../models";
 
 export interface CostItemProps {
-  costItem: CostItemModel;
+  costItem: CostItemComputed;
 }
 
 const CostItem = ({
-  costItem: { name, description, unit, unitPrice, quantity, taxRate },
+  costItem: {
+    name,
+    description,
+    unit,
+    unitPrice,
+    quantity,
+    taxRate,
+    grossCost,
+    discountedCost = grossCost,
+    netCost,
+  },
 }: CostItemProps) => {
-  const gross = unitPrice * quantity;
-  const net = gross * (1 + taxRate);
+  const theme = useTheme();
   return (
-    <TableRow>
+    <TableRow
+      sx={
+        unit === "fee"
+          ? {
+              "& .MuiTableCell-root": {
+                color: theme.palette.info.dark,
+              },
+              background: theme.palette.grey[200],
+            }
+          : {}
+      }
+    >
       <TableCell>
         {name}: {description}
       </TableCell>
       <TableCell>{unit}</TableCell>
       <TableCell>{quantity}</TableCell>
       <TableCell>{unitPrice}</TableCell>
-      <TableCell>{gross.toFixed(2)}</TableCell>
+      <TableCell>
+        {grossCost !== discountedCost ? (
+          <>
+            <Chip
+              label={grossCost.toFixed(2)}
+              sx={{
+                borderRadius: 0,
+                textDecoration: "line-through",
+                marginRight: 0.5,
+                height: "auto",
+                "& .MuiChip-label": { padding: 0 },
+              }}
+            />
+            {discountedCost.toFixed(2)}
+          </>
+        ) : (
+          grossCost.toFixed(2)
+        )}
+      </TableCell>
       <TableCell>{(taxRate * 100).toFixed(2)}%</TableCell>
-      <TableCell>{net.toFixed(2)}</TableCell>
+      <TableCell>{netCost.toFixed(2)}</TableCell>
     </TableRow>
   );
 };
@@ -41,17 +79,45 @@ CostItem.Header = () => {
 };
 
 export interface CostItemFooterProps {
-  total: number;
+  subtotal: number;
   discount: number;
+  subtotalAddedTax: number;
+  total: number;
 }
 
-CostItem.Footer = ({ total, discount }: CostItemFooterProps) => {
+CostItem.Footer = ({
+  total,
+  discount,
+  subtotal,
+  subtotalAddedTax,
+}: CostItemFooterProps) => {
+  const theme = useTheme();
   return (
     <>
       <TableRow>
-        <TableCell colSpan={3} />
+        <TableCell colSpan={3} sx={{ border: 0 }} />
         <TableCell>Discount:</TableCell>
-        <TableCell>{discount.toFixed(2)}</TableCell>
+        <TableCell
+          sx={discount < 0 ? { color: theme.palette.success.main } : {}}
+        >
+          {Math.min(discount, 0).toFixed(2)}
+        </TableCell>
+        <TableCell colSpan={2} className="striped-bg" />
+      </TableRow>
+      <TableRow>
+        <TableCell colSpan={3} sx={{ border: 0 }} />
+        <TableCell>Subtotal</TableCell>
+        <TableCell>{subtotal.toFixed(2)}</TableCell>
+        <TableCell>Added tax:</TableCell>
+        <TableCell>{subtotalAddedTax.toFixed(2)}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell colSpan={5} sx={{ border: 0 }}>
+          <Typography variant="caption" margin={0}>
+            * Discount is applied before taxes, to the items with higher tax
+            rate.
+          </Typography>
+        </TableCell>
         <TableCell>
           <Typography variant="body2" fontWeight="bold">
             Total:
@@ -60,14 +126,6 @@ CostItem.Footer = ({ total, discount }: CostItemFooterProps) => {
         <TableCell>
           <Typography variant="body2" fontWeight="bold">
             {total.toFixed(2)}
-          </Typography>
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell colSpan={5}>
-          <Typography variant="caption" margin={0}>
-            * Discount is applied before taxes, to the items with higher tax
-            rate.
           </Typography>
         </TableCell>
       </TableRow>
