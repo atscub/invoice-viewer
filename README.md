@@ -18,6 +18,10 @@ $ npm run start
 - The stack is React, MUI, Redux toolkit, Apollo. For mocking the API I used
   MockedProvider from @apollo/client/testing.
 
+## Tradeoffs and roadmap
+- I didn't implement any tests. So next steps are testing for the business logic in 
+the `services` as well as the UI logic of components. 
+
 ## Some of my reasoning when deciding for the architecture
 
 Having the business logic inside Components is not a good practice in my opinion. Components should only care about presentation logic. So, how to separate concerns?
